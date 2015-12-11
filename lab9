@@ -1,0 +1,100 @@
+#Lilia Chakarian
+#CST205
+#Assignment 9
+#source used:  http://www.cs.bu.edu/courses/cs101b1/jes/
+#open file for source
+def openfile(source):
+  source = makeSound(pickAFile())
+  return source
+  
+#EXPLORING ANY FILE 
+def explorefile():
+  filename = pickAFile()
+  source = makeSound(filename)
+  explore (source)
+  
+#function that copies samples between the start and stop index for the clip
+#into new sound  
+def clip1():
+  filename = pickAFile()
+  source = makeSound(filename)
+  target = makeEmptySound(getLength(source))
+  for i in range(22878, 41656):
+    value = getSampleValueAt(source, i)
+    setSampleValueAt(target, i, value*100)
+  explore (target)
+  return target
+  play(target)
+ 
+  #takes or clips part of a sound file and puts in to newly created sound file 
+def clip(source, start, end):
+ target = makeEmptySound(end-start+1)
+ index = 0
+ for sample in range(start, end):
+   value = getSampleValueAt(source, sample)
+   setSampleValueAt(target, index, value)
+   index +=1
+ return target
+
+ #lets splice new sound into a bigger sound 
+ #this is a generic copy to use in anywhere
+def copy(source, target, start):
+  index = 0
+  for sample in range(start, start + getLength(source)):
+    value = getSampleValueAt(source, index)
+    setSampleValueAt(target,sample,value)
+    index +=1
+    
+    
+#changing the volume of the sound
+def changeVolume(sound, percentChange):
+  for sample in getSamples(sound):
+    value = getSampleValue(sample)
+    value += value*(percentChange*1)
+    setSampleValue(sample, value)
+  return sound
+  
+  
+   #takes 5 .wav files, clips certain parts
+   # and combines them into a new file and plays   
+def collage():
+  accident = makeSound(pickAFile())
+  stupid = makeSound(pickAFile())
+  working = makeSound(pickAFile())
+  alwayspay = makeSound(pickAFile())
+  alittlehelp = makeSound(pickAFile())
+  
+  stupid = clip(stupid, 73365, 140415)
+  working = clip(working, 25256, 56468 )
+  alwayspay = clip(alwayspay, 968, 45859 )
+  alittlehelp = clip(alittlehelp, 29520, 57902)
+
+  sum = getLength(accident) + getLength(stupid) +getLength(working) +getLength(alwayspay) +getLength(alittlehelp)
+  sum += 5*0.2*getSamplingRate(stupid)
+  sum =int(sum)
+  changeVolume(working, 250)
+  changeVolume(stupid, 700)
+  changeVolume(alwayspay, 250)
+  sound = makeEmptySound(sum)
+  copy(accident, sound, 0)
+  
+  space = int(0.2*22050)
+  copy(stupid, sound, getLength(accident)+ space)
+  copy(working, sound, getLength(accident)+getLength(stupid)+space)
+  copy(alwayspay, sound, getLength(accident)+getLength(stupid)+getLength(working)+space )
+  copy(alittlehelp, sound,getLength(accident)+getLength(stupid)+getLength(working)+ getLength(alwayspay)+(space*5))
+  explore(sound)
+  return sound      
+  
+  
+#reversing the sound function made for collage, but didn't use.        
+def reverse(sound):
+  rate = int(getSamplingRate(sound))
+  print rate
+  reverseSound = makeEmptySound(getLength(sound),rate)
+  index = getLength(sound)-1
+  for sample in range(0, getLength(sound)):
+     value = getSampleValueAt(sound, index)
+     setSampleValueAt(reverseSound,sample,value)
+     index-=1
+  return reverseSound
