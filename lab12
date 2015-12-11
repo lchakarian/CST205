@@ -1,0 +1,274 @@
+
+# Lilia Chakarian
+# Alan Ayoub
+# Lab 12
+
+
+
+inventory =[]
+items ={}
+
+# The game can be played by typing in the game function
+def game():
+    # Constant Variables help anyone who edits the code see the constant variables easier
+    DIRECTION = 0
+    ROOM_NAME = 1
+    
+    # We had to use global variables because inventory and items need to be available in all rooms
+    global inventory
+    global items 
+    
+    userInput = ""
+    currentLocation = "parkingLot" #The user begins here before entering the warehouse
+    secretOpened = false
+    inventory = []
+    items = initializeItems()
+    
+    # Initialize rooms contains the definition for every room used
+    rooms = initializeRooms()
+
+    printNow("---- Welcome to The Empty Warehouse in the Desert, Detective! ----")
+    printNow("You've been tipped that the MOB murdered someone in an empty warehouse and now you're on a mission to find the body.")
+    printNow("To win the game, your'e objective is to find out where the MOB hid the body!")
+    printNow("Depnding on which part of the warehouse you are in, you will given options for which direction you can go.")
+    printNow("You can go north, south, east or west by typing that direction (n,s,e,w).")
+    printNow("Type 'help' to see the game's instructions again.")
+    printNow("Type 'exit' to escape out of the desert warehouse (don't be a fifone.)")
+    printNow("")
+    
+    
+    
+    while userInput!="exit":
+        roomDescription(currentLocation)
+        # specific directional options are allowed depending on the users current room
+        roomOptions = rooms[currentLocation]
+        # this loop makes decisions based on the users input
+        userInput = requestString("Choose a direction (n,s,e,w)")
+        userInput = parse(userInput)
+        if len(userInput)>0: 
+            if(userInput[:4]=='open'):
+                if(userInput[5:]== "nothing" or currentLocation!="breakroom"):
+                  printNow("cannot open anything")
+                else:
+                  userInput = openSecretDoor()  
+                  rooms["breakroom"] += [["e","secret room"]]         
+            if(userInput=="n" or userInput=="s" or userInput== "e" or userInput=="w"):
+                validDirection = false
+                for i in range(0,len(roomOptions)):
+                    # handles validation for user input
+                    if userInput == roomOptions[i][DIRECTION]:
+                        validDirection = true
+                        currentLocation = roomOptions[i][ROOM_NAME]
+                if not validDirection:
+                    printNow("Sorry, can't go in that direction") 
+            elif(userInput[:4]=='grab'):
+                if grabItem(currentLocation,userInput[5:]):
+                  printNow(userInput[5:] + " has been added to the inventory")
+                else:
+                  printNow("can't grab item")
+            elif(userInput[:4]=='read'): 
+                if(userInput[5:]== "nothing"):
+                  printNow("can't read item")
+            if(currentLocation == "secret room"):
+                userInput = winGame()
+                    
+        else:
+            printNow("Not a valid input, try again. (Use help if you need to)")
+        printNow("")    
+    printNow("Addio!")
+    
+# Initializes rooms and location options
+def initializeRooms():
+    parkingLot = [["n","WarehouseFoyer"]] #can only go north
+    WarehouseFoyer = [["n","equipmentarea"],["s","parkingLot"],["e","shipping room"]] #can go north, south, and east
+    office = [["e","equipmentarea"]] #can only go east
+    equipmentarea = [["s","WarehouseFoyer"],["w","office"]] #can go south and west
+    shippingroom = [["n","restroom"],["w","WarehouseFoyer"],["e","breakroom"]] #can go north, west, and east
+    restroom = [["s","shipping room"]] #can only go south
+    breakroom = [["w","shipping room"]] #can only go west
+    secretroom=[["w","breakroom"]] #can only go west
+    rooms = {"equipmentarea":equipmentarea, "parkingLot":parkingLot, "WarehouseFoyer":WarehouseFoyer, "office":office, "shipping room":shippingroom,"restroom":restroom,"breakroom":breakroom,"secret room":secretroom}
+    return rooms
+
+def initializeItems():
+    items = {"breda":"equipmentarea", "notepad":"shipping room"}
+    return items
+
+# Validates the users inputs              
+def parse(userInput):
+    if userInput is not None and userInput!="" :
+      userInput = userInput.lower()
+      userInputTokens = userInput.split()
+      
+      if (userInput == "n" or userInput == "s" or userInput == "e" or userInput == "w"):
+          return userInput
+      elif (userInput == "help"):
+          showHelp()
+          return "help"
+      elif (userInput == "exit"):
+          return userInput
+      elif (userInput=="i"):
+          showInventory( inventory)
+          return "i"
+      elif (userInputTokens[0] == "grab"):
+          if len(userInputTokens)<2:
+            return "grab nothing"
+          elif userInputTokens[1]=="up":
+            if len(userInputTokens)<3:
+              return "grab nothing"
+            else:
+              return "grab " + userInputTokens[2]
+          else:
+            return "grab " + userInputTokens[1] 
+      elif (userInputTokens[0] == "read"):
+          if len(userInputTokens)<2:
+            return "read nothing"
+          else:
+            if readItem(userInput[5:]):
+              return "read something"
+            else:
+              return "read nothing"
+      elif (userInputTokens[0] == "open"):
+          if len(userInputTokens)<2:
+              return "open nothing"
+          else:
+              if(userInput[5:]=="secret door"):
+                  return "open secret door" 
+              else:
+                  return "open nothing"  
+      else: 
+          return ""
+    else:
+        return ""
+
+# Help menu to guide the user with instructions and input information      
+def showHelp():
+    printNow("You are viewing the Help Menu")
+    printNow("")
+    printNow("---- Welcome to The Empty Warehouse in the Desert! ----")
+    printNow("You will have different options depending on which room you enter.")
+    printNow("You can to go north(n), south(s), east(e) or west(w) by typing that direction.")
+    printNow("You will have the option to grab items by typing in 'grab item'. ")
+    printNow("There are rooms that have secret doors that can be opened by typing 'open secret door'. ")
+    printNow("Type inventory or 'i' to display your inventory.")
+    printNow("There is a notepad that can be read by typing in 'read notepad', but only after you 'grab notepad'. ")
+    printNow("You can type 'help' to re-display this introduction.")
+    printNow("You can type 'exit' to quit the program at any time.")
+ 
+
+ # Shows the user what is in their inventory 
+def showInventory(inventory):
+    printNow("Inventory:")
+    printNow(inventory) 
+
+# Each room has a description and it is defined here            
+def roomDescription(room):
+    if room == "parkingLot":
+        printNow(room.upper())
+        printNow("You are at the front entry way of the warehouse in the parking lot.")
+        printNow("You can go north (into the Warehouse Foyer) ... if you're not a fifone.")
+    if room == "WarehouseFoyer":
+        printNow(room.upper())
+        printNow("You are in the warehouse foyer.")
+        printNow("The door closes, a loud echo fills the warehouse. There is some light from the windows above, but not much.")
+        printNow("Did you just hear rattling on the eastside of the warehouse? Scary.")
+        printNow("You can go north (into the Equipment Area) or enter the dark room to the east ( in the office).")
+        printNow("You can also exit south where you came from (parkingLot).")
+    if room == "office":
+        printNow(room.upper())
+        printNow("You are in the warehouse office area.")
+        printNow("In the center of the room is a chair with duct tape scraps, bullets, but no body.")
+        printNow("There is an entry to the east (into the equipment area).")
+    if room == "equipmentarea":
+        printNow(room.upper())
+        printNow("You are in the equipment area.")
+        printNow("What's the smell, ill. Is that what a dead body smells like?")
+        if "breda" in items: 
+          printNow("A loaded breda is sitting on the floor.")
+        else:  
+          printNow("There's an erie sound here, scary.")
+        printNow("On the warehouse inventory racks, there are cardboard boxes with dry blood.")
+        printNow("You can hear the wind from outside lightly whistling.")
+        printNow("There is a door that goes south (into the Warehouse Foyer) and a opening to the west ( into the office)")
+    if room == "shipping room":
+        printNow(room.upper())
+        printNow("You are in the shipping room.")
+        printNow("There's an empty weathered carpet shipping table with a box cutter, and clear tape.")
+        printNow("The echo sounds like footsteps are 20 yards behind you.")
+        if "notepad" in items:
+          printNow("A notepad is sitting on the end table.")
+        printNow("There is a door to the west (into the Warehouse Foyer), a door to the north (restroom), and a door to the east (into the breakroom).")
+    if room == "restroom":
+        printNow(room.upper())
+        printNow("You are in a neglected restroom that hasn't been maintenced in years.")
+        printNow("The mirror is shattered and the smell inside is aweful.")
+        printNow("There is blood near the sink.")
+        printNow("There is an entry to the south (into the shipping room).")
+    if room == "breakroom":
+        printNow(room.upper())
+        printNow("You walk into a dark and deserted breakroom.")  
+        printNow("To your right there is a posterboard with an agenda list.")
+        printNow("To the left, there's a coffee machine with slow drips every 10 seconds.")
+        printNow("There is an entry to the west (into the shipping room), you can also open the cabinet door.")
+    if room == "secret room":
+        printNow(room.upper())
+        printNow("You found a secret room!")
+        printNow("There's a big desk in the room, something like where the Godfather would sit.")
+        printNow("The evidence is for the taking now, it's all here.")
+        printNow("You see a handwritten note on a desk.")
+        printNow("The note reads: I can't believe you found the body...catch me if you can")
+
+
+# Function to allow the user to grab an item and also to remove the item from availabilty. 
+def grabItem(room, item):
+    isItemTaken = false
+    global inventory 
+    if item in items:
+      if items[item] == room:
+        inventory = inventory + [item]
+        isItemTaken= true 
+        del items[item]   
+    return isItemTaken
+
+# This is how we read the item into inventory
+def readItem(item): 
+    global inventory
+    if item in inventory:
+      if item == "notepad":
+        printNow("To Do List")
+        printNow("- Take out the trash.")
+        printNow("- Leave the scene, forget about it.")
+        printNow("- Call the Tatalia family and wish Jimmy a happy birthday.")
+        printNow("- Shine my stacey adams")
+        printNow("- don't forget the canollis")
+      return true
+    return false  
+
+# Secret Door function, you must have the breda to kill the mobster, otherwise you are weaponless and you will lose 
+def openSecretDoor():
+    global inventory
+    if "breda" in inventory: 
+        printNow("A mobster rushes you getting ready to beat you silly.")
+        printNow("You use your breda shotgun and blast him, killing the mobster instantly.")
+        printNow("Is that a door that the mobster came storming out of? What's in there??!?!?")
+        printNow("You can go east into the secret room (secret room).")
+        printNow("")
+        userInput = requestString("Choose a direction")
+        userInput = parse(userInput)
+        return userInput
+    else:
+        loseGame()
+        return "exit"
+
+# If the user enters the secret room without a weapon, they will lose
+def loseGame():
+    printNow("Uh oh! The MOB found you! You are done!.")
+    printNow("There's nothing you can do to defend yourself, the whole MOB family is there! Goodbye!")
+
+# This is what happens when the user walks into the secret room with the breda, they win!       
+def winGame():
+    roomDescription("secret room")
+    printNow("Good Job Detective!")
+    printNow("You found the body and the evidence! Mission accomplished!")
+    printNow("The game is over, time to put these scumb bags behind bars!")
+    return "exit"
