@@ -1,0 +1,114 @@
+#Lilia Chakarian
+#AlanAyoub
+#CST205
+#HANGMAN GAME
+#source used: http://www.cs.bu.edu/courses/cs101b1/jes/
+# also:  http://www.cs.uregina.ca/Links/class-info/325/PythonPictures/
+def hangman():
+  import random
+  dictionary = ["school", "university", "language", "airport"]
+  word = dictionary[random.randint(0, len(dictionary)-1)]
+  numberOfGuesses = 0
+  solved = false
+  showWord = ""
+  incorrectAnswer = "" #string for incorrectly guessed letters
+  correctAnswer = "" #string for correctly guessed letters
+  printNow ("This game is called HANGMAN. You will need to guess a ranom word chosen by computer")
+  printNow ("You will be asked to input a letter.  if this letter is part of the word, ")
+  printNow ("you will be given another chance to input another letter.  If it's not, then you ")
+  printNow ("will be hung.  You may make 6 misses....after which you lose the game")
+  printNow ("GOOD LUCK!")
+  while numberOfGuesses<6 and not solved:
+    letter = requestString("Enter Letter")
+    #if not a letter
+    if len(letter)>1 or (letter[0]<"A" or (letter[0]>"Z" and letter[0]<"a") or letter[0]>"z"):
+      printNow("Letters only please!")
+    #it is a letter
+    else:
+      letter = letter.lower() 
+      
+      if letter in word: #if it is a letter in the word
+        if letter in correctAnswer:#already guessed
+          printNow("Already Guessed")
+        else:
+          correctAnswer = correctAnswer+letter
+          for i in range(0, len(word)):
+            if word[i] not in correctAnswer:
+              solved = false
+              break
+            else:
+              solved = true
+          printNow("Correct guess!")
+      
+      else: #it is an incorrect letter
+        if letter in incorrectAnswer:#already guessed
+          printNow("Already Guessed")
+        else:
+          incorrectAnswer = incorrectAnswer + letter 
+          printNow("Incorrect")
+          numberOfGuesses += 1
+      if numberOfGuesses < 6:
+          if numberOfGuesses == 1:
+            printNow("_______      ")
+            printNow("|      |     ")
+            printNow("|      O     ")
+            printNow("|            ")
+            printNow("|            ")
+            printNow("|            ")
+            printNow("|            ")
+          elif numberOfGuesses == 2:
+            printNow("_______      ")
+            printNow("|      |     ")
+            printNow("|      O     ")
+            printNow("|      |     ")
+            printNow("|            ")
+            printNow("|            ")
+            printNow("|            ")
+          elif numberOfGuesses == 3:
+            printNow("_______      ")
+            printNow("|      |     ")
+            printNow("|      O     ")
+            printNow("|     /|     ")
+            printNow("|            ")
+            printNow("|            ")
+            printNow("|            ")
+          elif numberOfGuesses == 4:
+            printNow("_______      ")
+            printNow("|      |     ")
+            printNow("|      O     ")
+            printNow("|     /|\    ")
+            printNow("|            ")
+            printNow("|            ")
+            printNow("|            ")
+          elif numberOfGuesses == 5:
+            printNow("_______      ")
+            printNow("|      |     ")
+            printNow("|      O     ")
+            printNow("|     /|\    ")
+            printNow("|     /      ")
+            printNow("|            ")
+            printNow("|            ")
+            
+      printNow("Word so far:")
+      showWord = ""
+      for i in range(0, len(word)):
+        if word[i] in correctAnswer:
+          showWord = showWord + " " + word[i]
+        else:
+          showWord = showWord + " _"
+      printNow(showWord)
+      printNow(incorrectAnswer)
+      printNow("You have used %s out of 6 guesses"  % numberOfGuesses)
+      printNow("")
+ 
+  if solved:
+    printNow("Congratulations you win!")
+  else:
+    printNow("_______      ")
+    printNow("|      |     ")
+    printNow("|      O     ")
+    printNow("|     /|\    ")
+    printNow("|     / \    ")
+    printNow("|            ")
+    printNow("|            ")
+    printNow("Sorry, you lose.  Better luck next time!")
