@@ -1,0 +1,131 @@
+#Lab 4
+#Warm Up
+#manipulation makes your picture "better"
+def halfBetter():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for x in range(0, getWidth(pic)/2):
+    for y in range (0, getHeight(pic)):
+      p = getPixel(pic, x, y)
+      r = getRed(p)
+      setRed(p, r * 0.5)
+  repaint(pic)
+  
+#Problem 1a
+#applies a vertical mirror on the picture
+def verticalMirror():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for x in range (0, getWidth(pic)/2):
+    for y in range (0, getHeight(pic)):
+      left = getPixel(pic, x, y)
+      right = getPixel(pic, getWidth(pic) - x - 1, y)
+      color = getColor(left)
+      setColor(right, color)
+  repaint(pic)
+  
+#Problem 1b
+#applies a horizontal mirror on the image
+def topBottom():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for x in range (0, getWidth(pic)):
+    for y in range (0, getHeight(pic)/2):
+      top = getPixel(pic, x, y)
+      bottom = getPixel(pic, x, getHeight(pic) - y - 1)
+      color = getColor(top)
+      setColor(bottom, color)
+  repaint(pic)   
+  
+#Problem 1c
+#applies the bottom half of the picture horizontal mirror
+def bottomToTop():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for x in range (0, getWidth(pic)):
+    for y in range (0, getHeight(pic)/2):
+      top = getPixel (pic, x, getHeight(pic) - y - 1)
+      bottom = getPixel(pic, x, y)
+      color = getColor(top)
+      setColor(bottom, color)
+  repaint(pic)
+  
+#Problem 1d
+#quadruples the image into 4 quadrants
+def quadruple():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for x in range (0, getWidth(pic)/2):
+    for y in range (0, getHeight(pic)/2):
+      topleft = getPixel(pic, x, y)
+      topright = getPixel(pic, getWidth(pic) - x - 1, y)
+      bottomleft = getPixel(pic, x, getHeight(pic) - y - 1)
+      bottomright = getPixel(pic, getWidth(pic) - x - 1, getHeight(pic) - y - 1)
+      color = getColor(topleft)
+      setColor(topright, color)
+      setColor(bottomleft, color)
+      setColor(bottomright, color)
+  repaint(pic)
+  
+  #Problem 2
+ #Reference: http://www.cs.uregina.ca/Links/class-info/325/PythonPictures/#Duplicating
+ #makes a copy of the picture
+def simpleCopy():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  width = getWidth(pic)
+  height = getHeight(pic)
+  newpic = makeEmptyPicture(width, height)
+  for x in range(0, width):
+     for y in range(0, height):
+       color = getColor(getPixel(pic, x, y))
+       setColor(getPixel(newpic, x, y), color)
+  show(pic)
+  show(newpic)
+  return newpic
+
+ #Problem 3
+ #rotates the picture 90 degrees to left
+def rotatePic():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  width = getWidth(pic)
+  height = getHeight(pic)
+  newpic = makeEmptyPicture(height, width)
+  newpicWidth = 0
+  for x in range(0, width):
+    newpicHeight = 0
+    for y in range(0, height):
+      color = getColor(getPixel(pic, x, y))
+      setColor(getPixel(newpic, y, width - newpicWidth - 1), color)
+      newpicHeight = newpicWidth + 1
+    newpicWidth = newpicWidth + 1 
+    show(pic)
+  show(newpic)
+  return newpic
+  
+ #Problem 4
+ #shrinks the image half its original size
+def shrink():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  width = getWidth(pic)
+  height = getHeight(pic)
+  newpic = makeEmptyPicture(width/2, height/2)
+  newpicWidth = 0
+  for x in range(0, width):
+    newpicHeight = 0
+    for y in range(0, height):
+      color = getColor(getPixel(pic, x, y))
+      setColor(getPixel(newpic, x/2, y/2), color)
+      newpicHeight = newpicHeight + 1
+    newpicWidth = newpicWidth + 1
+    show(pic)
+  show(newpic)
+  return newpic
+  
