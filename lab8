@@ -1,0 +1,79 @@
+#Lilia Chakarian
+#Alan Ayoub
+#CST205
+#Assignment 8
+#source used:  http://www.cs.bu.edu/courses/cs101b1/jes/
+#getting sample value of file at 10000
+def sampleSoundFile():
+ filename = pickAFile()
+ s = makeSound(filename)
+ value = getSampleValueAt(s, 10000)
+ print value #50
+
+#EXPLORING ANY FILE 
+def explorefile():
+  filename = pickAFile()
+  source = makeSound(filename)
+  explore (source)
+  
+  
+ #doubles the volume of sound       
+def increaseVolumeOfSound():
+ filename = pickAFile()
+ s = makeSound(filename)
+ for sample in range(0, getLength(s)):
+   value = getSampleValueAt(s, sample)
+   setSampleValueAt(s, sample, value*2)
+ explore(s)
+
+#decreases the volume of the sound by half
+def decreaseVolume():
+ filename = pickAFile()
+ s = makeSound(filename)
+ for sample in range(0, getLength(s)):
+   value = getSampleValueAt(s, sample)
+   setSampleValueAt(s, sample, value/2)
+ explore(s)
+
+ #takes a sound object and factor that tells how much to increase(decrease volume by) 
+def changeVolume(n):
+  for sample in getSamples(sound):
+    value = getSampleValue(sample)
+    value += value*(percentChange*1)
+    setSampleValue(sample, value)
+  return sound
+
+ #getting the maximum sample value in the sound 
+def maxSample(sound):
+  filename = pickAFile()
+  sound = makeSound(filename)
+  maxVal = 0
+  for sample in range(0,getLength(sound)):
+    maxVal = max(maxVal,getSampleValueAt(sound, sample))
+  return  maxVal
+
+
+#increasing the volume of the sound as loud as possible or normalizing the sound
+def maxVolume(sound):
+  max = maxSample(sound)
+  factor = 32767/max 
+  for sample in getSamples(sound): 
+    value = getSampleValue(sample)
+    setSampleValue(sample, value*factor)
+  return sample
+  
+  
+ #this function takes a sound as a parameter
+ #for each sample value is greater than 0, it sets sample to maximum possible value:a32767
+ #if the sample value is less than0, the minimum value is set to -32768
+def goToEleven():
+  filename = pickAFile()
+  sound = makeSound(filename)
+  for sample in range (0, getLength(sound)):
+    value = getSampleValueAt(sound, sample)
+    if sample >0:
+      setSampleValue = (sample, 32767)
+    if sample < 0:
+        setSampleValue = (sample, -32767)
+  explore(sound)
+  
