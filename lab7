@@ -1,0 +1,136 @@
+#Warm Up
+#makes a snowman in the desert.  picture of the desert is picked.
+#then on the pictures gives specific location of where the ovals of the
+#body of the snowman need to be placed on top of each other.
+#snowman has black eyes and mouth (line), black buttons on the body and carrot colored nose.
+def makeSnowman():
+  pic = makePicture(pickAFile())
+  #addOvalFilled(picture, startX, startY, width, height[, color]):
+  #Ovals for White part of snowman and black eyes
+  addOvalFilled(pic, getWidth(pic)/2, getHeight(pic)/2, 64, 64, white)
+  addOvalFilled(pic, getWidth(pic)/2-6, getHeight(pic)/2+28, 92, 92, white)
+  addOvalFilled(pic, getWidth(pic)/2-12, getHeight(pic)/2+50, 116, 116, white)
+  addOvalFilled(pic, getWidth(pic)/2+6, getHeight(pic)/2+10, 8, 8, black)
+  addOvalFilled(pic, getWidth(pic)/2+20, getHeight(pic)/2+10, 8, 8, black)
+  # Adds buttons on his body
+  addOvalFilled(pic, getWidth(pic)/2+16, getHeight(pic)/2+65, 12, 12, black)
+  addOvalFilled(pic, getWidth(pic)/2+16, getHeight(pic)/2+93, 11, 11, black)
+  addOvalFilled(pic, getWidth(pic)/2+16, getHeight(pic)/2+120, 12, 12, black)
+  #addLine(picture, startX, startY, endX, endY[, color]):
+  #Adds Carot color NOSE
+  addArcFilled(pic, getWidth(pic)/2 -40, getHeight(pic)/2 -5, getWidth(pic)/2 - 260, getHeight(pic)/2 -110,20, 8, orange)
+  repaint (pic)
+  #Adds the line for the mouth
+  addLine(pic, getWidth(pic)/2+6, getHeight(pic)/2+35, getWidth(pic)/2+22, getHeight(pic) /2+33, black)
+  repaint (pic)
+
+#Thanksgiving Card
+#This program makes a thanksgivingc card.  The user is piking 3
+#pictures and those pictures are places on top of the card.  The first
+#picture tha's picked is the picture of the background.
+#This program also has a text function to write a text
+
+def makeTGCard():
+# Collecting picture files.
+  background = makePicture(pickAFile()) 
+  pic1 = makePicture(pickAFile())
+  pic2 = makePicture(pickAFile())
+  pic3 = makePicture(pickAFile())
+  card = makeEmptyPicture(900, 525)
+  
+  
+# Modifying picture files.
+
+#  Picture 2 has RED pixels removed.
+  for p in getPixels(pic2):
+    r = getRed(p)
+    setRed(p, r*200)
+
+# Draws pic1  
+  for x in range(0, getWidth(background)):
+    for y in range(0, getHeight(background)):
+      color = getColor(getPixel(background, x, y))
+      setColor(getPixel(card, x, y), color)
+# Draws pic1  
+  for x in range(0, getWidth(pic1)):
+    for y in range(0, getHeight(pic1)):
+      color = getColor(getPixel(pic1, x, y))
+      setColor(getPixel(card, x, y), color)
+# Draws pic2
+  for x in range(0, getWidth(pic2)):
+    for y in range(0, getHeight(pic2)):
+      color = getColor(getPixel(pic2, x, y))
+      setColor(getPixel(card, x+300, y), color)
+# Draws pic3  
+  for x in range(0, getWidth(pic3)):
+    for y in range(0, getHeight(pic3)):
+      color = getColor(getPixel(pic3, x, y))
+      setColor(getPixel(card, x+600, y), color)        
+  
+#addText(picture, xpos, ypos, text[, color]):
+  style = makeStyle("comicSans",bold,120)
+  addTextWithStyle(card,250,300,"Happy", style)
+  addTextWithStyle(card,20,430,"Thanksgiving!", style)
+  repaint (card)
+
+
+
+#Line Drawing
+#This program implemets a lot of things learned in the past weeks and creates a line drawing from an image. first  It makes the image better black and white.
+#  Then the luminance of each picture is compared to the luminance
+#of the pixel to the right and below.  Luminance of<19 gave a pretty good result.
+
+def lineDrawing():
+  """Creates a line drawing from an image"""
+  pic = makePicture(pickAFile())
+  pic = betterBnW(pic)
+  newPic = makeEmptyPicture((getWidth(pic)-1), (getHeight(pic)-1))
+  for x in range (0, getWidth(pic)-1):
+    for y in range (0, getHeight(pic)-1):
+      p = getPixel(pic, x, y)
+      rightSide = getPixel(pic, x+1, y)
+      down = getPixel(pic, x, y+1)
+      reds = getRed(p)
+      greens = getGreen(p)
+      blues = getBlue(p)
+      redRightSide = getRed(rightSide)
+      blueRightSide = getBlue(rightSide)
+      greenRightSide = getGreen(rightSide)
+      redDown = getRed(down)
+      blueDown = getBlue(down)
+      greenDown = getGreen(down)
+      lum = reds * 0.299 + blues * 0.114 + greens * 0.587
+      lumright = redRightSide * 0.299 + blueRightSide * 0.114 + greenRightSide * 0.587
+      lumdown = redDown * 0.299 + blueDown * 0.114 + greenDown * 0.587
+      if abs(lum - lumright) < 15 and abs(lum - lumdown) < 15:
+        setColor(p,white)
+      else:
+        setColor(p,black)
+  pic = lineCopy(pic, newPic)
+  show(pic)
+  return pic 
+  
+ #better black and white function         
+def betterBnW(pic):
+ # pic = pickAFile()
+  #pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in pixels:
+    r = getRed(p)*0.299
+    g = getGreen(p)*0.587
+    b = getBlue(p)* 0.114
+    lum = r + g + b
+    setColor(p, makeColor(lum,lum,lum))
+   #show pic
+  return(pic)     
+      
+      
+      
+def lineCopy(source, target):
+  """copies pixel colors to target without right and bottom pixels"""
+  for x in range (0, getWidth(source)-1):
+    for y in range (0, getHeight(source)-1):
+      color = getColor(getPixel(source, x, y))
+      setColor(getPixel(target, x, y), color)
+  return target     
+      
