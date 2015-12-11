@@ -1,0 +1,57 @@
+
+# Lilia Chakarian
+# Alan Ayoub
+# Lab 14
+# The assignment says individual work "with or without help from others"
+# We have elected to help each other
+ 
+ 
+import string
+
+#Problem 1 - Counting Words
+def greenEggsCount():
+  textFile = pickAFile()
+  openFile = open(textFile, "rt")
+  text = openFile.read()
+  tokens = text.split()
+  count = len(tokens)
+  histogram ={}
+
+  for word in tokens:
+    if word.lower() in histogram:
+      histogram[word.lower()] += 1
+    else:
+      histogram[word.lower()] = 1
+      
+  max = histogram[tokens[0].lower()]
+  maxWord =tokens[0].lower()
+  for key in histogram:
+    if max < histogram[key]:
+      max = histogram[key]
+      maxWord = key
+  printNow( histogram)
+  printNow("There are a total of " + str(count) + " words")
+  printNow("The word that repeats the most is: " + maxWord + " - " + maxWord + " repeats a total of " +str(max) +" times.")
+
+
+#Problem 2 - News Feed
+def newsFeed():
+  textFile = pickAFile()
+  openFile = open(textFile, "rt")
+  text = openFile.read()
+  printNow("*** Otter Realm Breaking News! ****")
+  index  = string.find(text, "<h3>")
+  while index != -1:
+    entryEndpoint = string.find(text,"</a>")
+    text = text[index:]
+    entryEndpoint = string.find(text,"</h3>")
+    startPoint = string.find(text, "h3>")
+  
+    entry = text[startPoint+3:entryEndpoint]
+ 
+    printNow(">>  " + entry)
+    text = text[entryEndpoint:]
+    index  = string.find(text, "<h3>")
+ 
+ 
+    
