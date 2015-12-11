@@ -1,0 +1,125 @@
+#Group 2 - Alan Ayoub, Lilia Chakarian, Jimmy Ngyuen, Pedro Ramos
+#Lab 3
+
+
+#Warm Up
+#reduces the red in an image by half and turn it into a function in the program
+def halfRed():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in pixels:
+    r = getRed(p)
+    setRed(p, r * 0.5)
+    repaint(pic)
+
+#Warm Up
+#removes the blue from the picture
+def noBlue():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in pixels:
+    b = getBlue(p)
+    setBlue(p, b * 0.0)
+    repaint(pic)
+
+#Problem 1
+#reduces the size of the red in the picture
+#according with is put instea of 'n'
+def lessRed(n):
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in pixels:
+    r = getRed(p)
+    setRed(p, r * n / 100)
+    repaint(pic)
+
+#Problem 2
+#adds more red color to the picture
+#according what the user puts instead of 'n'
+def moreRed(n):
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in pixels:
+    r = getRed(p)
+    setRed(p, r + r * n / 100)
+    repaint(pic)
+    
+#Problem 3
+#makes picture look more pink
+def roseColoredGlasses():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in pixels:
+    r = getRed(p)
+    b = getBlue(p)
+    g = getGreen(p)
+    setRed(p, r + 255)
+    setBlue(p, b +180)
+    setGreen(p, g + 105)
+    repaint(pic)
+
+# Problem 4
+# Citing a URL that helped us understand how "color" is handled and
+# How to make the image lighter
+# http://www.cs.uregina.ca/Links/class-info/325/PythonPictures/
+def lightenUp():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in getPixels(pic):
+    color = getColor(p)
+    color = makeLighter(color)
+    setColor(p,color)
+    repaint(pic)
+
+# Problem 5
+# Citing a URL that helped us understand how "negate" is handled and
+# How to turn an image into a negative
+# http://www.cs.uregina.ca/Links/class-info/325/PythonPictures/
+def makeNegative():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in getPixels(pic):
+    r = getRed(p)
+    b = getBlue(p)
+    g = getGreen(p)
+    negColor = makeColor(255 - r, 255 - g, 255 - b)
+    setColor(p,negColor)
+    repaint(pic)
+
+# Problem 6
+# Citing a URL that helped us understand how "black and white" is handled and
+# How to turn an image into a grayscale
+# http://www.cs.uregina.ca/Links/class-info/325/PythonPictures/
+def BnW():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in getPixels(pic):
+    r = getRed(p)
+    g = getGreen(p)
+    b = getBlue(p)
+    lum = (r + g + b)/ 3
+    setColor(p, makeColor(lum,lum,lum))
+    repaint(pic)
+
+#makes picture better black and white
+def betterBnW():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  pixels = getPixels(pic)
+  for p in getPixels(pic):
+    r = getRed(p)*0.299
+    g = getGreen(p)*0.587
+    b = getBlue(p)* 0.114
+    lum = r + g + b
+    setColor(p, makeColor(lum,lum,lum))
+    repaint(pic)
+
+    
