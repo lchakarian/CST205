@@ -1,0 +1,139 @@
+#Lab #5 Begin
+#############
+    
+#Warm Up
+# The function spacedCopy creates a new image that copies
+# the original image to location (100, 100) on a bigger
+# picture.
+def spacedCopy():
+  filename = pickAFile()
+  pic = makePicture(filename)
+  width = getWidth(pic)
+  height = getHeight(pic)
+  newpic = makeEmptyPicture(width*2, height*2)
+  for x in range(0, width):
+    for y in range(0, height):
+       color = getColor(getPixel(pic, x, y))
+       setColor(getPixel(newpic, x+115, y+140), color)
+  show(newpic)
+  return newpic
+  
+  
+#Problem 1
+# The function pyCopy creates a new image that copies the
+# original image to location (targetX, targetY) on a
+# bigger picture.
+def pyCopy(source, target, targetX, targetY):
+  source = pickAFile()
+  pic = makePicture(source)
+  width = getWidth(pic)
+  height = getHeight(pic)
+  target = makeEmptyPicture(width*2, height*2)
+  for x in range(0, width):
+    for y in range(0, height):
+       color = getColor(getPixel(pic, x, y))
+       setColor(getPixel(target, x+targetX, y+targetY), color)
+  show(target)
+  return target
+
+#Lab #5: Problem 2
+# The function makeCollage collects eight images, modifies
+# them, then copies them to a new image with resolution
+# 850 x 1100.
+def makeCollage():
+# Collecting picture files.
+  pic1 = makePicture(pickAFile())
+  pic2 = makePicture(pickAFile())
+  pic3 = makePicture(pickAFile())
+  pic4 = makePicture(pickAFile())
+  pic5 = makePicture(pickAFile())
+  pic6 = makePicture(pickAFile())
+  pic7 = makePicture(pickAFile())
+  pic8 = makePicture(pickAFile())
+  collage = makeEmptyPicture(850, 1100)
+  
+# Modifying picture files.
+
+#  Picture 1 has BLUE pixels removed.
+  for p in getPixels(pic1):
+    b = getBlue(p)
+    setBlue(p, b*0)
+#  Picture 2 has RED pixels removed.
+  for p in getPixels(pic2):
+    r = getRed(p)
+    setRed(p, r*0)
+#  Picture 3 has GREEN pixels removed.
+  for p in getPixels(pic3):
+    g = getGreen(p)
+    setGreen(p, g*0)
+#  Picture 4 has BLUE pixels doubled.    
+  for p in getPixels(pic4):
+    b = getBlue(p)
+    setBlue(p, b*2)
+#  Picture 5 has RED pixels doubled.    
+  for p in getPixels(pic5):
+    r = getRed(p)
+    setRed(p, r*2)
+#  Picture 6 has GREEN pixels doubled.    
+  for p in getPixels(pic6):
+    g = getGreen(p)
+    setGreen(p, g*0)
+#  Picture 7 is converted to greyscale.    
+  for p in getPixels(pic7):
+    r = getRed(p)*0.299
+    g = getGreen(p)*0.587
+    b = getBlue(p)* 0.114
+    lum = r+g+b
+    setRed(p, lum)
+    setGreen(p, lum)
+    setBlue(p, lum)
+#  Picture 8 is rose colored.    
+  for p in getPixels(pic8):
+    r = getRed(p)
+    g = getGreen(p)
+    b = getBlue(p)
+    setRed(p, r+255)
+    setGreen(p, g+105)
+    setBlue(p, b+180)
+# Draws pic1  
+  for x in range(0, getWidth(pic1)):
+    for y in range(0, getHeight(pic1)):
+      color = getColor(getPixel(pic1, x, y))
+      setColor(getPixel(collage, x, y), color)
+# Draws pic2
+  for x in range(0, getWidth(pic2)):
+    for y in range(0, getHeight(pic2)):
+      color = getColor(getPixel(pic2, x, y))
+      setColor(getPixel(collage, x, y+275), color)
+# Draws pic3  
+  for x in range(0, getWidth(pic3)):
+    for y in range(0, getHeight(pic3)):
+      color = getColor(getPixel(pic3, x, y))
+      setColor(getPixel(collage, x, y+550), color)
+# Draws pic4
+  for x in range(0, getWidth(pic4)):
+    for y in range(0, getHeight(pic4)):
+      color = getColor(getPixel(pic4, x, y))
+      setColor(getPixel(collage, x, y+825), color)
+# Draws pic5      
+  for x in range(0, getWidth(pic5)):
+    for y in range(0, getHeight(pic5)):
+      color = getColor(getPixel(pic5, x, y))
+      setColor(getPixel(collage, x+425, y), color)
+# Draws pic6      
+  for x in range(0, getWidth(pic6)):
+    for y in range(0, getHeight(pic6)):
+      color = getColor(getPixel(pic6, x, y))
+      setColor(getPixel(collage, x+425, y+275), color)
+# Draws pic7
+  for x in range(0, getWidth(pic7)):
+    for y in range(0, getHeight(pic7)):
+      color = getColor(getPixel(pic7, x, y))
+      setColor(getPixel(collage, x+425, y+550), color)
+# Draws pic8
+  for x in range(0, getWidth(pic8)):
+    for y in range(0, getHeight(pic8)):
+      color = getColor(getPixel(pic8, x, y))
+      setColor(getPixel(collage, x+425, y+825), color)          
+  repaint(collage)
+  
